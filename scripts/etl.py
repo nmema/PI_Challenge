@@ -11,3 +11,11 @@ engine = create_engine(connection)
 df = pd.read_csv(URL)
 df['FECHA_COPIA'] = datetime.datetime.now()
 df.to_sql("Unificado", con=engine, if_exists='append', index=False)
+
+data = {
+    'table_name': 'Unificado',
+    'rows_uploaded': len(df),
+    'date_uploaded': datetime.datetime.now()
+}
+df_log = pd.DataFrame(data, index=[0])
+df_log.to_sql('etl_log', con=engine, if_exists='append', index=False)

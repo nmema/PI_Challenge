@@ -24,3 +24,10 @@ FROM cte
 WHERE row_number > 1;
 GO
 
+-- Log Table
+CREATE TABLE etl_log (
+    table_name varchar(100),
+    rows_uploaded int,
+    date_uploaded datetime NOT NULL DEFAULT (GETDATE())
+);
+GO
