@@ -1,3 +1,7 @@
+'''Unificado ETL
+simple script that extracts data from an URL and insert it into SQL Server.
+'''
+
 import datetime
 import pandas as pd
 from sqlalchemy import create_engine
