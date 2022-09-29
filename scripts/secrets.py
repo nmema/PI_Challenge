@@ -1,11 +1,17 @@
-mssql_user = '<user_name>'
-mssql_pass = '<user_password>'
+import boto3
+import json
 
-server = '<server>'
-db = '<database>'
-driver = '<driver>'.replace(' ', '+')
-connection = 'mssql+pyodbc://{}:{}@{}/{}?driver={}&TrustServerCertificate=Yes'.format(mssql_user,
-                                                                                      mssql_pass,
-                                                                                      server,
-                                                                                      db,
-                                                                                      driver)
+
+def get_secret(secret_name) -> dict:
+    '''function that gets values from AWS Credentials Manager'''
+    session = boto3.session.Session(profile_name='saml')
+    client = session.client('secretsmanager', region_name='us-west-2')
+    secrets = client.get_secret_value(SecretId=secret_name)
+    return json.loads(secrets['SecretString'])
+
+credentials = get_secret('mssql-credentials')
+connection = 'mssql+pyodbc://{}:{}@{}/{}?driver={}&TrustServerCertificate=Yes'.format(credentials['USER'],
+                                                                                      credentials['PASSWORD'],
+                                                                                      credentials['SERVER'],
+                                                                                      credentials['DB'],
+                                                                                      credentials['DRIVER'].replace(' ', '+'))
